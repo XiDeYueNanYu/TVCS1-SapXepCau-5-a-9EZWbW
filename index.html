@@ -1,0 +1,1077 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>越南语-语法-排序练习</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding-bottom: 300px;
+            background-color: #f7fbf3;
+        }
+        
+        #gameContainer {
+            min-height: calc(100vh - 150px);
+        }
+        
+        #infoBox {
+            width: 95%; 
+            max-width: 700px;
+            min-height: 100px; 
+            margin: 0 auto; 
+            border: 2px solid #72a9db; /*041b31 1f4263*/
+            background: #63a0d8; /*ecf2e4 fefefc 63a0d8 */
+            color: #ffffff; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-size: clamp(40px, 5vw, 60px);
+            font-weight: bold;
+        }
+        
+        #contactBox, #instructionBox {
+            width: 90%;
+            max-width: 700px;
+            min-height: 25px;
+            margin: 0px auto;
+            border: 2px solid #72a9db;
+            background: #63a0d8;
+            color: #ffd300;
+            padding-left: 20px;
+            display: flex;
+            align-items: center;
+            font-size: clamp(16px, 2vw, 20px);
+            font-weight: bold;
+        }
+        
+        #instructionBox {
+            color: #f7e19c;
+        }
+
+        #indicator, #indicator2 {
+            width: 90%;
+            max-width: 700px;
+            min-height: 70px;
+            margin: 15px auto;
+            padding: 15px;
+            border: 3px solid #fed16a;
+            background: #ffffe0;
+            border-radius: 5px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+            align-items: center;
+            font-size: clamp(32px, 5vw, 48px);
+            font-weight: bold;
+        }
+        
+        #indicator2 {
+            background: #fffbef;
+            border: 3px solid #ccc;
+            min-height: 90px;
+            transition: all .4s;
+        }
+        
+        #indicator2.correct {
+            background: #B7D7AA !important;
+            border-color: #5ba346;
+        }
+        
+        #indicator2.wrong {
+            background: #ffcccc !important;
+            border-color: #CE6D5E;
+        }
+
+        .word-btn {
+            padding: 10px 20px;
+            background: #fff;
+            border: 2px solid #63a0d8;
+            border-radius: 12px;
+            font-size: clamp(32px, 5vw, 48px);
+            cursor: pointer;
+            user-select: none;
+            box-shadow: 0 3px 6px rgba(0,0,0,.15);
+            transition: all .2s;
+            min-width: 60px;
+            text-align: center;
+        }
+        
+        .word-btn.used {
+            opacity: 0.35;
+            pointer-events: none;
+        }
+        
+        .word-btn-in-answer {
+            background: #ffd700 !important;
+            animation: pop .3s;
+        }
+        
+        @keyframes pop {
+            0% { transform: scale(0.8); }
+            100% { transform: scale(1); }
+        }
+
+        #optionsPool {
+            width: 95%;
+            max-width: 700px;
+            margin: 20px auto;
+            padding: 15px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        #controls {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 95%;
+            max-width: 800px;
+            background: #f7fbf3;
+            padding: 10px 0;
+            z-index: 1000;
+        }
+        
+        button {
+            padding: 8px 12px;
+            margin: 2px 3px;
+            cursor: pointer;
+            border: 2px solid #63a0d8;
+            background: #63a0d8;
+            color: #fffbef;
+            font-size: 28px;
+            border-radius: 5px;
+        }
+        
+        .active-mode {
+            border: 2px solid #fed16a;
+        }
+        
+        .disabled {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        #results, #score {
+            width: 95%;
+            max-width: 700px;
+            margin: 20px auto;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 28px;
+            display: none;
+        }
+        
+        #results {
+            border: 2px solid #734A2E;
+            background: #fffbef;
+        }
+        
+        #score {
+            color: #FF6820;
+            background: #fffbef;
+            border: 2px solid #FF6820;
+        }
+                #sentenceNumber {
+                        width: 70px;
+                        height: 30px;
+                        text-align: center;
+                        font-size: 20px;
+                        border: 2px solid #63a0d8;
+                        border-radius: 5px;
+                        margin: 0 5px;
+                }
+        @media (max-width: 768px) {
+            body {
+                padding-bottom: 220px;
+            }
+            
+            button {
+                font-size: 20px;
+            }
+            
+            .word-btn {
+                font-size: 28px;
+                padding: 8px 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="gameContainer">
+        <div id="infoBox">习得越南语<br>语法 - 排序练习</div>
+        <div id="contactBox">讲师-阮玉煌 | Weixin：XiDeYueNanYu</div>
+        <div id="instructionBox">把词语按正确顺序排列 </div>
+
+        <div id="indicator"></div>
+        <div id="indicator2"></div>
+        <div id="optionsPool"></div>
+
+        <div id="results"></div>
+        <div id="score">0/0</div>
+    </div>
+
+    <div id="controls">
+        <div>
+            <button id="freeModeBtn" class="active-mode">自由模式</button>
+            <button id="testModeBtn">作业模式</button>
+        </div>
+        <div>
+            <button id="autoContinueBtn">自动继续</button>
+            <button id="showHideBtn">显示-隐藏</button>
+        </div>
+        <div>
+            <button id="prevBtn">◀</button>
+            <input type="text" id="sentenceNumber" inputmode="numeric">
+            <button id="nextBtn">▶</button>
+            <button id="replayBtn">再听一遍</button>
+        </div>
+    </div>
+
+    <audio id="mainAudio"></audio>
+    <audio id="correctAudio" src="Dung.mp3"></audio>
+    <audio id="wrongAudio" src="Sai.mp3"></audio>
+
+    <script>
+
+const sentences = [
+    {
+        "audioFile": "audio.mp3",
+        "start": 0.30525,
+        "end": 1.67525,
+        "correctAnswer": "【Anh】【là】【ai】?",
+        "translation": "你是谁？",
+        "options": [
+            "Anh là ai?",
+            "Anh là ải?",
+            "Oanh là ai?",
+            "Anh là ay?"
+        ]
+    },
+    {
+        "audioFile": "audio.mp3",
+        "start": 2.22525,
+        "end": 3.65525,
+        "correctAnswer": "【Tôi】【là】【Ba】.",
+        "translation": "我是巴。",
+        "options": [
+            "Tôi là Ba.",
+            "Tôi là Bà.",
+            "Tơi là Ba.",
+            "Tôi là Pa."
+        ]
+    },
+    {
+        "audioFile": "audio.mp3",
+        "start": 4.20525,
+        "end": 5.90525,
+        "correctAnswer": "【Anh】【ấy】【là】【ai】?",
+        "translation": "他是谁？",
+        "options": [
+            "Anh ấy là ai?",
+            "Anh ấy là ái?",
+            "Oanh ấy là ai?",
+            "Anh ấy là ay?"
+        ]
+    },
+    {
+        "audioFile": "audio.mp3",
+        "start": 6.37525,
+        "end": 8.31525,
+        "correctAnswer": "【Anh】【ấy】【là】【anh】【Kim】.",
+        "translation": "他是金哥。",
+        "options": [
+            "Anh ấy là anh Kim.",
+            "Anh ấy là anh Kinh.",
+            "Anh ấy là anh Kìm.",
+            "Anh ấy là oanh Kim."
+        ]
+    },
+    {
+        "audioFile": "audio.mp3",
+        "start": 9.12525,
+        "end": 10.54525,
+        "correctAnswer": "【Chị】【là】【ai】?",
+        "translation": "姐姐是谁？",
+        "options": [
+            "Chị là ai?",
+            "Chị là ải?",
+            "Dị là ai?",
+            "Chị là ay?"
+        ]
+    },
+    {
+        "audioFile": "audio.mp3",
+        "start": 11.16525,
+        "end": 12.56525,
+        "correctAnswer": "【Tôi】【là】【Vy】.",
+        "translation": "我是(阿)薇。",
+        "options": [
+            "Tôi là Vy.",
+            "Tơi là Phi.",
+            "Tơi là Vy.",
+            "Tôi là Phi."
+        ]
+    },
+    {
+        "audioFile": "audio.mp3",
+        "start": 13.38525,
+        "end": 14.80525,
+        "correctAnswer": "【Ai】【là】【An】.",
+        "translation": "谁是(阿)安？",
+        "options": [
+            "Ai là An?",
+            "Ai là Ẩn?",
+            "Ai là Anh?",
+            "Ai là Am?"
+        ]
+    },
+    {
+        "audioFile": "audio.mp3",
+        "start": 15.54525,
+        "end": 16.91525,
+        "correctAnswer": "【Tôi】【là】【An】.",
+        "translation": "我是(阿)安。",
+        "options": [
+            "Tôi là An.",
+            "Tôi là Ân.",
+            "Tơi là An.",
+            "Tôi là Am."
+        ]
+    },
+    {
+        "audioFile": "audio.mp3",
+        "start": 17.59525,
+        "end": 19.09525,
+        "correctAnswer": "【Đây】【là】【ai】?",
+        "translation": "这是谁？",
+        "options": [
+            "Đây là ai?",
+            "Đây là ải?",
+            "Đây là ay?",
+            "Dây là ai?"
+        ]
+    },
+    {
+        "audioFile": "audio.mp3",
+        "start": 19.87525,
+        "end": 21.48525,
+        "correctAnswer": "【Đây】【là】【cô】【Lan】.",
+        "translation": "这是(阿)兰老师。",
+        "options": [
+            "Đây là cô Lan.",
+            "Đây là cô Lăn.",
+            "Đây là cô Len.",
+            "Đây là cô Nan."
+        ]
+    },
+    {
+        "audioFile": "audio.mp3",
+        "start": 22.37525,
+        "end": 23.93525,
+        "correctAnswer": "【Đấy】【là】【ai】?",
+        "translation": "那是谁？",
+        "options": [
+            "Đấy là ai?",
+            "Đấy là ay?",
+            "Đấy là ải?",
+            "Dấy là ai?"
+        ]
+    },
+    {
+        "audioFile": "audio.mp3",
+        "start": 24.68525,
+        "end": 26.48525,
+        "correctAnswer": "【Đấy】【là】【chị】【Nga】.",
+        "translation": "那是(阿)娥姐姐。",
+        "options": [
+            "Đấy là chị Nga.",
+            "Đấy là chị Nha.",
+            "Đấy là chị Ngà.",
+            "Đấy là dị Nga."
+        ]
+    },
+    {
+        "audioFile": "audio.mp3",
+        "start": 27.23525,
+        "end": 28.81525,
+        "correctAnswer": "【Đó】【là】【ai】?",
+        "translation": "那是谁？",
+        "options": [
+            "Đó là ai?",
+            "Đó là ải?",
+            "Đó là ay?",
+            "Đó là ai"
+        ]
+    },
+    {
+        "audioFile": "audio.mp3",
+        "start": 29.48525,
+        "end": 31.41525,
+        "correctAnswer": "【Đó】【là】【bà】【Hà】【đấy】.",
+        "translation": "那是(阿)霞奶奶。",
+        "options": [
+            "Đó là bà Hà đấy.",
+            "Đó là bà Hạ đấy.",
+            "Đó là bà Há đấy.",
+            "Đó là bà Hả đấy."
+        ]
+    },
+    {
+        "audioFile": "audio.mp3",
+        "start": 32.30525,
+        "end": 33.69525,
+        "correctAnswer": "【Kia】【là】【ai】?",
+        "translation": "那边的是谁？",
+        "options": [
+            "Kia là ai?",
+            "Kia là ái?",
+            "Kia là ai",
+            "Kía là ai?"
+        ]
+    },
+    {
+        "audioFile": "audio.mp3",
+        "start": 34.34525,
+        "end": 36.32525,
+        "correctAnswer": "【Đó】【là】【anh】【Tư】【đấy】.",
+        "translation": "那是(阿)思哥。",
+        "options": [
+            "Đó là anh Tư đấy.",
+            "Đó là anh Tú đấy.",
+            "Đó là anh Thư đấy.",
+            "Đó là anh Tứ đấy."
+        ]
+    },
+    {
+        "audioFile": "audio.mp3",
+        "start": 37.27525,
+        "end": 39.14525,
+        "correctAnswer": "【Ai】【là】【người】【Trung】【Quốc】.",
+        "translation": "谁是中国人？",
+        "options": [
+            "Ai là người Trung Quốc?",
+            "Ai là người Trung Cuốc?",
+            "Ai là người Trung Quấc?",
+            "Ai là người Trưng Quốc?"
+        ]
+    },
+    {
+        "audioFile": "audio.mp3",
+        "start": 39.81525,
+        "end": 41.76525,
+        "correctAnswer": "【Tôi】【là】【người】【Trung】【Quốc】.",
+        "translation": "我是中国人。",
+        "options": [
+            "Tôi là người Trung Quốc.",
+            "Tôi là người Trung Cuốc.",
+            "Tơi là người Trung Quốc.",
+            "Tôi là người Trưng Quốc."
+        ]
+    },
+    {
+        "audioFile": "audio.mp3",
+        "start": 42.64525,
+        "end": 45.17525,
+        "correctAnswer": "【Anh】【ấy】【cũng】【là】【người】【Trung】【Quốc】.",
+        "translation": "他也是中国人。",
+        "options": [
+            "Anh ấy cũng là người Trung Quốc.",
+            "Anh ấy củng là người Trung Quốc.",
+            "Oanh ấy cũng là người Trung Quốc.",
+            "Anh ấy cũng là người Trung Cuốc."
+        ]
+    },
+    {
+        "audioFile": "audio.mp3",
+        "start": 45.95525,
+        "end": 48.54525,
+        "correctAnswer": "【Chúng】【tôi】【đều】【là】【người】【Trung】【Quốc】.",
+        "translation": "我们都是中国人。",
+        "options": [
+            "Chúng tôi đều là người Trung Quốc.",
+            "Chúng tôi đều là người Trung Cuốc.",
+            "Chúng tôi đều là người Trung Quấc.",
+            "Chúng tôi điêu là người Trung Quốc."
+        ]
+    },
+    {
+        "audioFile": "audio.mp3",
+        "start": 49.35525,
+        "end": 50.97525,
+        "correctAnswer": "【Cô】【ấy】【thế】【nào】?",
+        "translation": "她怎么样？",
+        "options": [
+            "Cô ấy thề nào?",
+            "Cô ẩy thế nào?",
+            "Cô ấy thế náo?",
+            "Cô ấy thế nào?"
+        ]
+    },
+    {
+        "audioFile": "audio.mp3",
+        "start": 51.66525,
+        "end": 53.13525,
+        "correctAnswer": "【Cô】【ấy】【rất】【đẹp】.",
+        "translation": "她很漂亮。",
+        "options": [
+            "Cô ấy rát đẹp.",
+            "Cô ẩy rất đẹp.",
+            "Cô ấy rất đẹt.",
+            "Cô ấy rất đẹp."
+        ]
+    },
+    {
+        "audioFile": "audio.mp3",
+        "start": 53.89525,
+        "end": 56.01525,
+        "correctAnswer": "【Anh】【ấy】【có】【đẹp】【trai】【không】?",
+        "translation": "他帅吗？",
+        "options": [
+            "Anh ấy co đẹp trai không?",
+            "Anh ẩy có đẹp trai khôn?",
+            "Anh ấy có đẹp chai không?",
+            "Anh ấy có đẹp trai không?"
+        ]
+    },
+    {
+        "audioFile": "audio.mp3",
+        "start": 56.71525,
+        "end": 58.91525,
+        "correctAnswer": "【Anh】【ấy】【rất】【đẹp】【trai】【đấy】.",
+        "translation": "他真的很帅呢。",
+        "options": [
+            "Anh ấy rất đep trai đấy.",
+            "Anh ấy rất đẹp tray đấy.",
+            "Anh ẩy rất đẹp trai đấy.",
+            "Anh ấy rất đẹp trai đấy."
+        ]
+    },
+    {
+        "audioFile": "audio.mp3",
+        "start": 59.72525,
+        "end": 61.28525,
+        "correctAnswer": "【Ông】【ấy】【thế】【nào】?",
+        "translation": "他（老先生）怎么样？",
+        "options": [
+            "Ông ấy thề nào?",
+            "Ông ấy thế náo?",
+            "Ông ẩy thế nào?",
+            "Ông ấy thế nào?"
+        ]
+    },
+    {
+        "audioFile": "audio.mp3",
+        "start": 61.83525,
+        "end": 63.34525,
+        "correctAnswer": "【Ông】【ấy】【rất】【già】.",
+        "translation": "他（老先生）很老。",
+        "options": [
+            "Ông ấy rất giả.",
+            "Ông ấy rất giàu.",
+            "Ông ẩy rất già.",
+            "Ông ấy rất già."
+        ]
+    },
+    {
+        "audioFile": "audio.mp3",
+        "start": 64.02525,
+        "end": 66.00525,
+        "correctAnswer": "【Bà】【ấy】【có】【trẻ】【không】?",
+        "translation": "她（老太太）年轻吗？",
+        "options": [
+            "Bà ấy có trể không?",
+            "Bà ẩy có trẻ khôn?",
+            "Bà ấy có chẻ không?",
+            "Bà ấy có trẻ không?"
+        ]
+    },
+    {
+        "audioFile": "audio.mp3",
+        "start": 66.87525,
+        "end": 68.74525,
+        "correctAnswer": "【Bà】【ấy】【trẻ】【lắm】.",
+        "translation": "她（老太太）非常年轻。",
+        "options": [
+            "Bà ấy trẻ lẳm.",
+            "Bà ấy chẻ lắm.",
+            "Bà ẩy trẻ lắm.",
+            "Bà ấy trẻ lắm."
+        ]
+    },
+    {
+        "audioFile": "audio.mp3",
+        "start": 69.49525,
+        "end": 71.14525,
+        "correctAnswer": "【Bạn】【có】【khỏe】【không】?",
+        "translation": "你身体好吗？",
+        "options": [
+            "Bạn có khoẻ không?",
+            "Bạn có khỏe khôn?",
+            "Bạn cỏ khỏe không?",
+            "Bạn có khỏe không?"
+        ]
+    },
+    {
+        "audioFile": "audio.mp3",
+        "start": 71.72525,
+        "end": 73.11525,
+        "correctAnswer": "【Mình】【rất】【khỏe】.",
+        "translation": "我身体很好。",
+        "options": [
+            "Mình rát khỏe.",
+            "Mình rất khoẻ.",
+            "Mình rất khõe.",
+            "Mình rất khỏe."
+        ]
+    },
+    {
+        "audioFile": "audio.mp3",
+        "start": 74.00525,
+        "end": 75.47525,
+        "correctAnswer": "【Chị】【ấy】【thế】【nào】?",
+        "translation": "(阿)姐怎么样？",
+        "options": [
+            "Chị ẩy thế nào?",
+            "Chị ấy thề nào?",
+            "Chị ấy thế náo?",
+            "Chị ấy thế nào?"
+        ]
+    },
+    {
+        "audioFile": "audio.mp3",
+        "start": 76.36525,
+        "end": 78.33525,
+        "correctAnswer": "【Chị】【ấy】【hơi】【yếu】【đấy】.",
+        "translation": "(阿)姐有点虚弱。",
+        "options": [
+            "Chị ấy hơi yểu đấy.",
+            "Chị ẩy hơi yếu đấy.",
+            "Chị ấy hởi yếu đấy.",
+            "Chị ấy hơi yếu đấy."
+        ]
+    },
+    {
+        "audioFile": "audio.mp3",
+        "start": 79.12525,
+        "end": 80.71525,
+        "correctAnswer": "【Anh】【ấy】【thế】【nào】.",
+        "translation": "他怎么样。",
+        "options": [
+            "Anh ấy thế nào?",
+            "Anh ẩy thế nào.",
+            "Anh ấy thề nào.",
+            "Anh ấy thế nào."
+        ]
+    },
+    {
+        "audioFile": "audio.mp3",
+        "start": 81.27525,
+        "end": 82.88525,
+        "correctAnswer": "【Anh】【ấy】【rất】【nhanh】.",
+        "translation": "他很快。",
+        "options": [
+            "Anh ấy rất nhành.",
+            "Anh ẩy rất nhanh.",
+            "Anh ấy rát nhanh.",
+            "Anh ấy rất nhanh."
+        ]
+    },
+    {
+        "audioFile": "audio.mp3",
+        "start": 83.55525,
+        "end": 85.06525,
+        "correctAnswer": "【Ông】【ấy】【thế】【nào】?",
+        "translation": "他（老先生）怎么样？",
+        "options": [
+            "Ông ấy thề nào?",
+            "Ông ấy thế náo?",
+            "Ông ẩy thế nào?",
+            "Ông ấy thế nào?"
+        ]
+    },
+    {
+        "audioFile": "audio.mp3",
+        "start": 85.73525,
+        "end": 87.11525,
+        "correctAnswer": "【Ông】【ấy】【rất】【chậm】.",
+        "translation": "他（老先生）很慢。",
+        "options": [
+            "Ông ấy rất chẳm.",
+            "Ông ẩy rất chậm.",
+            "Ông ấy rát chậm.",
+            "Ông ấy rất chậm."
+        ]
+    },
+    {
+        "audioFile": "audio.mp3",
+        "start": 87.90525,
+        "end": 89.91525,
+        "correctAnswer": "【Cậu】【ấy】【có】【cao】【không】?",
+        "translation": "他（小男孩）高吗？",
+        "options": [
+            "Cậu ấy có cào không?",
+            "Cậu ấy cố cao không?",
+            "Cậu ẩy có cao không?",
+            "Cậu ấy có cao không?"
+        ]
+    },
+    {
+        "audioFile": "audio.mp3",
+        "start": 90.49525,
+        "end": 92.19525,
+        "correctAnswer": "【Cậu】【ấy】【cao】【lắm】.",
+        "translation": "他（小男孩）非常高。",
+        "options": [
+            "Cậu ấy cao lẳm.",
+            "Cậu ẩy cao lắm.",
+            "Cẩu ấy cao lắm.",
+            "Cậu ấy cao lắm."
+        ]
+    },
+    {
+        "audioFile": "audio.mp3",
+        "start": 92.95525,
+        "end": 94.68525,
+        "correctAnswer": "【Bà】【ấy】【thế】【nào】?",
+        "translation": "她（老太太）怎么样？",
+        "options": [
+            "Bà ấy thề nào?",
+            "Bà ẩy thế nào?",
+            "Bà ấy thế náo?",
+            "Bà ấy thế nào?"
+        ]
+    },
+    {
+        "audioFile": "audio.mp3",
+        "start": 95.24525,
+        "end": 96.85525,
+        "correctAnswer": "【Bà】【ấy】【hơi】【thấp】.",
+        "translation": "她（老太太）有点矮。",
+        "options": [
+            "Bà ẩy hơi thấp.",
+            "Bà ấy hởi thấp.",
+            "Bà ấy hơi thắp.",
+            "Bà ấy hơi thấp."
+        ]
+    }
+];
+
+        let currentIndex = 0;
+        let isFreeMode = true;
+        let autoContinue = false;
+        let showTranslation = true;
+        let correctCount = 0;
+        let userAnswers = [];
+        let selectedWords = [];
+        let isChecking = false;
+        let isAudioPlaying = false;
+
+        const audio = document.getElementById('mainAudio');
+        const correctAudio = document.getElementById('correctAudio');
+        const wrongAudio = document.getElementById('wrongAudio');
+        const indicator = document.getElementById('indicator');
+        const indicator2 = document.getElementById('indicator2');
+        const optionsPool = document.getElementById('optionsPool');
+        const sentenceNumber = document.getElementById('sentenceNumber');
+        const scoreDisplay = document.getElementById('score');
+        const resultsDisplay = document.getElementById('results');
+
+        function init() {
+            userAnswers = new Array(sentences.length).fill(null);
+            updateDisplay();
+        }
+
+        function updateDisplay() {
+            sentenceNumber.value = currentIndex + 1;
+            const s = sentences[currentIndex];
+            
+            if (showTranslation) {
+                indicator.innerHTML = `<div style="color:#63a0d8;font-size:0.6em;">${s.translation}</div>`;
+            } else {
+                indicator.innerHTML = '';
+            }
+
+            const words = s.correctAnswer.match(/【(.*?)】/g).map(t => t.slice(1,-1));
+            const shuffled = shuffleArray(words);
+
+            optionsPool.innerHTML = '';
+            indicator2.innerHTML = '';
+            indicator2.className = '';
+            selectedWords = [];
+            isChecking = false;
+
+            shuffled.forEach(word => {
+                const btn = document.createElement('div');
+                btn.className = 'word-btn';
+                btn.textContent = word;
+                btn.onclick = () => selectWord(word, btn);
+                optionsPool.appendChild(btn);
+            });
+
+            document.getElementById('prevBtn').classList.toggle('disabled', !isFreeMode && currentIndex === 0);
+        }
+
+        function selectWord(word, btn) {
+            if (btn.classList.contains('used')) {
+                const idx = selectedWords.indexOf(word);
+                if (idx > -1) {
+                    selectedWords.splice(idx, 1);
+                    btn.classList.remove('used');
+                    renderAnswerArea();
+                }
+                return;
+            }
+
+            selectedWords.push(word);
+            btn.classList.add('used');
+            renderAnswerArea();
+
+            indicator2.classList.remove('correct', 'wrong');
+            
+            if (selectedWords.length === getCorrectWords().length && !isChecking) {
+                isChecking = true;
+                setTimeout(checkAnswer, 400);
+            }
+        }
+
+        function renderAnswerArea() {
+            indicator2.innerHTML = '';
+            selectedWords.forEach((word, i) => {
+                const btn = document.createElement('div');
+                btn.className = 'word-btn word-btn-in-answer';
+                btn.textContent = word;
+                btn.onclick = () => {
+                    selectedWords.splice(i, 1);
+                    renderAnswerArea();
+                    Array.from(optionsPool.children).find(b => b.textContent === word)?.classList.remove('used');
+                    isChecking = false;
+                    indicator2.classList.remove('correct', 'wrong');
+                };
+                indicator2.appendChild(btn);
+            });
+        }
+
+        function getCorrectWords() {
+            return sentences[currentIndex].correctAnswer.match(/【(.*?)】/g).map(t => t.slice(1,-1));
+        }
+
+        function getCorrectAnswerWithSpaces() {
+            const words = getCorrectWords();
+            return words.join(' ');
+        }
+
+        function checkAnswer() {
+            const userStr = selectedWords.join('');
+            const correctStr = getCorrectWords().join('');
+            const isCorrect = userStr === correctStr;
+
+            if (!isFreeMode && userAnswers[currentIndex] === null) {
+                userAnswers[currentIndex] = selectedWords.join(' ');
+                if (isCorrect) correctCount++;
+                updateScore();
+            }
+
+            if (isCorrect) {
+                indicator2.classList.add('correct');
+                indicator2.classList.remove('wrong');
+                correctAudio.play();
+                playOriginalSentenceExactly();
+            } else {
+                indicator2.classList.add('wrong');
+                wrongAudio.play();
+                
+                // Trong chế độ 作业模式, phát âm thanh ngay cả khi sai
+                if (!isFreeMode) {
+                    playOriginalSentenceExactly();
+                }
+            }
+
+            const delay = 1200;
+            
+            const moveToNextSentence = () => {
+                if (isFreeMode) {
+                    if (autoContinue && isCorrect) {
+                        nextSentence();
+                    }
+                } else {
+                    if (currentIndex < sentences.length - 1) {
+                        currentIndex++;
+                        updateDisplay();
+                    } else {
+                        showFinalResults();
+                    }
+                }
+            };
+            
+            setTimeout(() => {
+                if (!isAudioPlaying) {
+                    moveToNextSentence();
+                } else {
+                    const checkAudioEnd = setInterval(() => {
+                        if (!isAudioPlaying) {
+                            clearInterval(checkAudioEnd);
+                            moveToNextSentence();
+                        }
+                    }, 100);
+                }
+            }, delay);
+        }
+
+        function playOriginalSentenceExactly() {
+            const s = sentences[currentIndex];
+            audio.src = s.audioFile;
+            audio.currentTime = s.start;
+            isAudioPlaying = true;
+            audio.play();
+
+            const stopAtEnd = () => {
+                if (audio.currentTime >= s.end) {
+                    audio.pause();
+                    isAudioPlaying = false;
+                    audio.removeEventListener('timeupdate', stopAtEnd);
+                }
+            };
+            audio.addEventListener('timeupdate', stopAtEnd);
+            
+            audio.addEventListener('ended', () => {
+                isAudioPlaying = false;
+            });
+        }
+
+        document.getElementById('replayBtn').onclick = playOriginalSentenceExactly;
+
+        function showFinalResults() {
+            let text = `练习完成！\n正确：${correctCount}/${sentences.length}（${(correctCount/sentences.length*100).toFixed(1)}%）\n\n`;
+            
+            let hasWrong = false;
+            let wrongQuestionsText = "错题回顾：\n";
+            
+            for (let i = 0; i < sentences.length; i++) {
+                const correctWords = getCorrectWordsFromSentence(sentences[i]);
+                const correctAnswerWithSpaces = correctWords.join(' ');
+                
+                if (userAnswers[i] && userAnswers[i] !== correctAnswerWithSpaces) {
+                    hasWrong = true;
+                    wrongQuestionsText += `${i+1}. ${sentences[i].translation}\n   你的答案: ${userAnswers[i]}\n   正确答案: ${correctAnswerWithSpaces}\n\n`;
+                }
+            }
+            
+            if (hasWrong) {
+                text += wrongQuestionsText;
+            } else {
+                text += "全对！太厉害了！";
+            }
+            
+            resultsDisplay.textContent = text;
+            resultsDisplay.style.display = 'block';
+            scoreDisplay.style.display = 'none';
+        }
+
+        function getCorrectWordsFromSentence(sentence) {
+            return sentence.correctAnswer.match(/【(.*?)】/g).map(t => t.slice(1,-1));
+        }
+
+        function updateScore() {
+            scoreDisplay.textContent = `${correctCount}/${sentences.length}`;
+        }
+
+        function nextSentence() {
+            if (currentIndex < sentences.length - 1) {
+                currentIndex++;
+                updateDisplay();
+            } else if (isFreeMode) {
+                currentIndex = 0;
+                updateDisplay();
+            }
+        }
+
+        function prevSentence() {
+            if (currentIndex > 0) {
+                currentIndex--;
+                updateDisplay();
+            } else if (isFreeMode) {
+                currentIndex = sentences.length - 1;
+                updateDisplay();
+            }
+        }
+
+        function shuffleArray(a) {
+            const arr = [...a];
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        document.getElementById('freeModeBtn').onclick = () => {
+            isFreeMode = true;
+            document.getElementById('freeModeBtn').classList.add('active-mode');
+            document.getElementById('testModeBtn').classList.remove('active-mode');
+            scoreDisplay.style.display = 'none';
+            resultsDisplay.style.display = 'none';
+            updateDisplay();
+        };
+
+        document.getElementById('testModeBtn').onclick = () => {
+            isFreeMode = false;
+            document.getElementById('testModeBtn').classList.add('active-mode');
+            document.getElementById('freeModeBtn').classList.remove('active-mode');
+            scoreDisplay.style.display = 'block';
+            resultsDisplay.style.display = 'none';
+            currentIndex = 0;
+            correctCount = 0;
+            userAnswers = new Array(sentences.length).fill(null);
+            updateDisplay();
+        };
+
+        document.getElementById('prevBtn').onclick = () => {
+            if (isFreeMode) {
+                prevSentence();
+            } else if (currentIndex > 0) {
+                currentIndex--;
+                updateDisplay();
+            }
+        };
+        
+        document.getElementById('nextBtn').onclick = () => {
+            if (isFreeMode) {
+                nextSentence();
+            } else if (currentIndex < sentences.length - 1) {
+                currentIndex++;
+                updateDisplay();
+            }
+        };
+
+        document.getElementById('autoContinueBtn').onclick = () => {
+            autoContinue = !autoContinue;
+            document.getElementById('autoContinueBtn').classList.toggle('active-mode', autoContinue);
+        };
+
+        document.getElementById('showHideBtn').onclick = () => {
+            showTranslation = !showTranslation;
+            document.getElementById('showHideBtn').classList.toggle('active-mode', showTranslation);
+            updateDisplay();
+        };
+
+        sentenceNumber.onchange = () => {
+            if (isFreeMode) {
+                const n = parseInt(sentenceNumber.value) - 1;
+                if (n >= 0 && n < sentences.length) { 
+                    currentIndex = n; 
+                    updateDisplay(); 
+                }
+            }
+        };
+
+        init();
+    </script>
+</body>
+</html>
